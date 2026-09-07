@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/forms";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@layer base {
+    input, select, textarea {
+        @apply border border-gray-300 bg-white;
+    }
+}
