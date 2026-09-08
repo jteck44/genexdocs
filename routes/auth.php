@@ -11,16 +11,17 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::prefix('genexdocs')->group(function () {
+    Route::middleware('guest')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
+            ->name('register');
 
         Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('genexdocs', [AuthenticatedSessionController::class, 'create'])
+        Route::get('/', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('genexdocs', [AuthenticatedSessionController::class, 'store']);
+        Route::post('/', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
@@ -33,9 +34,9 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-});
+    });
 
-Route::middleware('auth')->group(function () {
+    Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -56,4 +57,5 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+    });
 });

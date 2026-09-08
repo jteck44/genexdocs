@@ -18,11 +18,12 @@ Route::get('/test', function () {
     return 'je commence le projet avec ce test';
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::prefix('genexdocs')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware(['auth', 'verified'])
+        ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+    Route::middleware('auth')->group(function () {
     // --- Profil (Breeze) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/parametres', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/parametres/adjoint', [SettingsController::class, 'setAdjoint'])->name('settings.set-adjoint');
     Route::delete('/parametres/adjoint', [SettingsController::class, 'removeAdjoint'])->name('settings.remove-adjoint');
+    });
 });
 
 require __DIR__.'/auth.php';
