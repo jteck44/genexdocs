@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GenexDocs</title>
+     <link rel="icon" type="image/png" href="{{ asset('storage/images/genex/genexlogo.png') }}">
     @vite('resources/css/app.css')
 </head>
 <body class="p-8">

@@ -25,7 +25,7 @@
                         Les Mandants
                     </x-nav-link>
                     @if (Auth::user()->isDirector())
-                        <x-nav-link :href="route('users.index')">
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             Équipe
                         </x-nav-link>
                         <x-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.*')">
@@ -34,7 +34,7 @@
                     @endif
 
                     @if (Auth::user()->isDirector())
-                         <x-nav-link :href="route('settings.index')">
+                                 <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">
                             Paramètres
                          </x-nav-link>
                     @endif
@@ -87,15 +87,24 @@
                 Tableau de bord
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('report-categories.index')">
+            <x-responsive-nav-link :href="route('report-categories.index')" :active="request()->routeIs('report-categories.*') || request()->routeIs('report-types.*')">
                 Rédiger un rapport
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
+                Tous les rapports
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('mandants.index')" :active="request()->routeIs('mandants.*')">
                 Les Mandants
             </x-responsive-nav-link>
             @if (Auth::user()->isDirector())
-                <x-responsive-nav-link :href="route('templates.create')">
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    Équipe
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('templates.create')" :active="request()->routeIs('templates.*')">
                     Importer un template
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">
+                    Paramètres
                 </x-responsive-nav-link>
             @endif
         </div>

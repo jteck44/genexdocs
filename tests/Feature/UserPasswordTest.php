@@ -22,6 +22,7 @@ it('stores a generated account password in a loginable form', function () {
 
     expect($matches[1] ?? null)->not->toBeNull();
     expect(Hash::check($matches[1], $jordan->getRawOriginal('password')))->toBeTrue();
+    expect($jordan->email_verified_at)->not->toBeNull();
 });
 
 it('lets a director reset an expert password', function () {

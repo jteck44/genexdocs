@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Illuminate\View\View;
 
 class PasswordResetLinkController extends Controller
@@ -31,15 +33,27 @@ class PasswordResetLinkController extends Controller
 
         if ($user) {
             $temporaryPassword = Str::random(12);
-            $user->update([
-                'password' => $temporaryPassword,
-                'temporary_password_expires_at' => now()->addHour(),
-            ]);
 
-            Mail::to($user->email)->send(new TemporaryPasswordMail(
-                $user->name,
-                $temporaryPassword,
-            ));
+            try {
+                Mail::to($user->email)->send(new TemporaryPasswordMail(
+                    $user->name,
+                    $temporaryPassword,
+                ));
+
+                $user->update([
+                    'password' => $temporaryPassword,
+                    'temporary_password_expires_at' => now()->addHour(),
+                ]);
+            } catch (TransportExceptionInterface $exception) {
+                Log::error('Impossible d’envoyer le mot de passe temporaire.', [
+                    'user_id' => $user->id,
+                    'exception' => $exception->getMessage(),
+                ]);
+
+                return back()->withInput()->withErrors([
+                    'email' => 'Le service email est momentanément indisponible. Vérifiez la configuration SMTP puis réessayez.',
+                ]);
+            }
         }
 
         return back()->with('status',

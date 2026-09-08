@@ -50,6 +50,24 @@ test('email verification status is unchanged when the email address is unchanged
     $this->assertNotNull($user->refresh()->email_verified_at);
 });
 
+test('a director remains verified after changing their email', function () {
+    $user = User::factory()->create([
+        'role' => 'director',
+        'email_verified_at' => now(),
+    ]);
+
+    $this->actingAs($user)
+        ->patch('/profile', [
+            'name' => $user->name,
+            'email' => 'new-director@example.com',
+        ])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/profile');
+
+    expect($user->refresh()->email)->toBe('new-director@example.com');
+    expect($user->email_verified_at)->not->toBeNull();
+});
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 

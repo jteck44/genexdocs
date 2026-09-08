@@ -41,6 +41,7 @@ class UserManagementController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
+            'email_verified_at' => now(),
             'password' => $temporaryPassword,
             'temporary_password_expires_at' => now()->addHour(),
         ]);
@@ -62,6 +63,7 @@ class UserManagementController extends Controller
 
         $temporaryPassword = Str::random(12);
         $user->update([
+            'email_verified_at' => now(),
             'password' => $temporaryPassword,
             'temporary_password_expires_at' => now()->addHour(),
         ]);
