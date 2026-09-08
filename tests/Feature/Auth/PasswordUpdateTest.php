@@ -38,3 +38,19 @@ test('correct password must be provided to update password', function () {
         ->assertSessionHasErrorsIn('updatePassword', 'current_password')
         ->assertRedirect('/profile');
 });
+
+test('updating the password removes temporary password expiration', function () {
+    $user = User::factory()->create([
+        'temporary_password_expires_at' => now()->addHour(),
+    ]);
+
+    $this->actingAs($user)
+        ->put('/password', [
+            'current_password' => 'password',
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($user->refresh()->temporary_password_expires_at)->toBeNull();
+});

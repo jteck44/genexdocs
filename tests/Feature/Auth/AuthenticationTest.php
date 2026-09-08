@@ -37,5 +37,18 @@ test('users can logout', function () {
     $response = $this->actingAs($user)->post('/logout');
 
     $this->assertGuest();
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('login'));
+});
+
+test('expired temporary passwords cannot authenticate', function () {
+    $user = User::factory()->create([
+        'temporary_password_expires_at' => now()->subMinute(),
+    ]);
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertGuest();
 });

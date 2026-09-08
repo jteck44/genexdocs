@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     // --- Équipe et paramètres de direction ---
     Route::get('/equipe', [UserManagementController::class, 'index'])->name('users.index');
     Route::post('/equipe', [UserManagementController::class, 'store'])->name('users.store');
+    Route::post('/equipe/{user}/reinitialiser-mot-de-passe', [UserManagementController::class, 'resetPassword'])->name('users.reset-password');
+    Route::delete('/equipe/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
 
     Route::get('/parametres', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/parametres/adjoint', [SettingsController::class, 'setAdjoint'])->name('settings.set-adjoint');

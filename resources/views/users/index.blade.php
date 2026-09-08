@@ -22,6 +22,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl text-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <details class="bg-white rounded-2xl border border-gray-200 p-5">
                 <summary class="cursor-pointer font-semibold text-gray-700">+ Créer un nouveau compte</summary>
                 <form method="POST" action="{{ route('users.store') }}" class="mt-4 space-y-3">
@@ -48,18 +54,45 @@
                         </div>
                         {{-- Lecture seule : la nomination de l'adjoint se fait
                              désormais depuis Paramètres, pas ici. --}}
-                        <span class="text-xs font-semibold px-3 py-1 rounded-full
-                            {{ match($user->role) {
-                                'director' => 'bg-[#B8912F]/15 text-[#8a6c22]',
-                                'director_adjoint' => 'bg-blue-50 text-blue-700',
-                                default => 'bg-gray-100 text-gray-600',
-                            } }}">
-                            {{ match($user->role) {
-                                'director' => 'Directeur',
-                                'director_adjoint' => 'Directeur adjoint',
-                                default => 'Expert',
-                            } }}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full
+                                {{ match($user->role) {
+                                    'director' => 'bg-[#B8912F]/15 text-[#8a6c22]',
+                                    'director_adjoint' => 'bg-blue-50 text-blue-700',
+                                    default => 'bg-gray-100 text-gray-600',
+                                } }}">
+                                {{ match($user->role) {
+                                    'director' => 'Directeur',
+                                    'director_adjoint' => 'Directeur adjoint',
+                                    default => 'Expert',
+                                } }}
+                            </span>
+
+                            @if ($user->isExpert())
+                                <details class="relative">
+                                    <summary class="cursor-pointer list-none text-xs font-semibold text-gray-500 hover:text-[#16213E]">
+                                        Avancé
+                                    </summary>
+                                    <div class="absolute right-0 z-10 mt-2 w-52 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+                                        <form method="POST" action="{{ route('users.reset-password', $user) }}"
+                                              onsubmit="return confirm('Générer un nouveau mot de passe pour {{ addslashes($user->name) }} ?');">
+                                            @csrf
+                                            <button type="submit" class="text-xs font-semibold text-[#16213E] hover:text-[#0f1730]">
+                                                Nouveau mot de passe
+                                            </button>
+                                        </form>
+                                    </div>
+                                </details>
+                                <form method="POST" action="{{ route('users.destroy', $user) }}"
+                                      onsubmit="return confirm('Masquer le compte de {{ addslashes($user->name) }} ?') && confirm('{{ $user->reports_authored_count > 0 ? 'Ses rapports seront conservés, mais ce compte ne sera plus visible dans l’équipe. Confirmer ?' : 'Confirmer définitivement cette suppression ?' }}');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-800">
+                                        Masquer
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>

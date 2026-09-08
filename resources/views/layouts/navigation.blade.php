@@ -4,7 +4,7 @@
             <div class="flex">
 
                 <a href="{{ route('dashboard') }}" class="relative z-10 flex items-center gap-0.5 shrink-0">
-                    <img src="{{ asset('storage/public/images/genexlogo.png') }}" alt="LogoGenex" class="h-8 w-auto">
+                    <img src="{{ asset('storage/images/genex/genexlogo.png') }}" alt="LogoGenex" class="h-10 w-auto">
                     <span class="text-xl font-extrabold text-[#16213E] tracking-tight">Genex</span>
                     <span class="text-xl font-extrabold text-[#B8912F] tracking-tight">Docs</span>
                 </a>

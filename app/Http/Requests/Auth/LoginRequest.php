@@ -50,6 +50,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if ($user->temporary_password_expires_at?->isPast()) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Ce mot de passe temporaire a expiré. Demandez au directeur de le réinitialiser.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
